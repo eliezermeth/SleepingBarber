@@ -1,0 +1,10 @@
+Write a program that addresses the following problem: there are 2 barbers (each a thread) and 10 clients
+(each of which are threads).  The clients enter the barbershop at random intervals.  If either barber is
+free a client will take a haircut (this takes some random amount of time).  If both barbers are busy the
+client sits on the couch and waits.  As soon as a barber is free a client gets a haircut. At each stage
+you should have an output (sout) that says what is going on (each client should say when he is waiting,
+when he is getting a haircut and when he is done).   We don’t need to impose an order on the threads.
+We are NOT (NOT, NOT, NOT) using any of the various types of locks or similar classes that do all the
+work for us. No thread-pools.  No using synchronize. Please write a paragraph explaining how you solved
+the various “problems” that came up and the approach you took. Give one sample run of the code (show the
+output with the printed code).
