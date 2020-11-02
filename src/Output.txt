@@ -1,5 +1,5 @@
-Barber 0 is cutting hair for customer 0.
 Customer 0 took a chair.
+Barber 0 is cutting hair for customer 0.
 Customer 1 took a chair.
 Barber 1 is cutting hair for customer 1.
 Customer 2 took a chair.
@@ -9,9 +9,9 @@ Customer 3 took a chair.
 Customer 1 has left the shop.
 Barber 1 is cutting hair for customer 3.
 Customer 4 took a chair.
+Customer 5 took a chair.
 Customer 2 has left the shop.
 Barber 0 is cutting hair for customer 4.
-Customer 5 took a chair.
 Customer 3 has left the shop.
 Barber 1 is cutting hair for customer 5.
 Customer 6 took a chair.
