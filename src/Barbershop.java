@@ -1,6 +1,6 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Eliezer Meth
@@ -8,82 +8,115 @@ import java.util.Stack;
  *
  * Class to imitate a barbershop.
  */
-public class Barbershop
+public class Barbershop extends Thread
 {
     // Class constants
-    public static int NUM_BARBERS = 2;
-    public static int NUM_CUSTOMERS = 10;
-    public static int NUM_WAITING_ROOM_SEATS = 4;
-    public static int TIME_TO_CUT_HAIR = 1000; // 1 second
+    public static final int CHARIS = 5;
+    public static final long BARBER_TIME = 5000;
+    private static final long CUSTOMER_TIME = 2000;
+    public static final long OFFICE_CLOSE = BARBER_TIME * 2;
+    public static BlockingQueue queue = new ArrayBlockingQueue(CHARIS);
 
-    // Class variables
-    private Stack<Barber> sleepingBarber = new Stack<>();
-    private Queue<Customer> customersToEnterShop = new LinkedList<>();
-    private Queue<Customer> waitingRoom = new LinkedList<>(); // assume infinite as per HW specs
+    public static final int NUM_BARBERS = 2;
+    public static final int NUM_CUSTOMERS = 10;
 
-    public Barbershop()
+    class Customer extends Thread
     {
-        initializeBarbers();
-        initializeCustomers();
+        int id;
+        boolean notCut = true;
+        BlockingQueue queue = null;
 
-        while (customersToEnterShop.size() != 0 || waitingRoom.size() != 0) // while still customers needing haircut
+        public Customer(int i, BlockingQueue queue)
         {
-            // attempt to move customers from outside to the waiting room
-            while (!customersToEnterShop.isEmpty() && waitingRoom.size() < NUM_WAITING_ROOM_SEATS)
-            {
-                waitingRoom.add(customersToEnterShop.poll());
-            }
-
-            // to view progress
-            break;
+            id = i;
+            this.queue = queue;
         }
 
-        // to view progress
-        while (!waitingRoom.isEmpty())
+        public void run()
         {
-            while (!sleepingBarber.empty() && !waitingRoom.isEmpty())
+            while (true) // as long as the customer is not cut he is in the queue or if not enough seats he is out
             {
-                Customer customer = waitingRoom.poll();
+                try {
+                    this.queue.add(this.id);
 
-                Barber barber = sleepingBarber.pop();
-                barber.cutHair(customer);
-                sleepingBarber.push(barber);
+                    this.getHaircut(); // take a seat
+                } catch (IllegalStateException e) {
+                    System.out.println("There are no free seats.  Customer " + this.id + " has left the barbershop.");
+                }
+                break;
             }
         }
-        System.out.println("Done hair-cutting loop");
-        terminateBarbers();
-        System.out.println("Done");
+
+        // take a seat
+        public void getHaircut()
+        {
+            System.out.println("Customer " + this.id + " took a chair.");
+        }
     }
 
-    private void initializeBarbers()
+    class Barber extends Thread
     {
-        // add 2 barbers
+        BlockingQueue queue = null;
+        int id;
+        public Barber(int id, BlockingQueue queue)
+        {
+            this.id = id;
+            this.queue = queue;
+        }
+
+        public void run()
+        {
+            while (true)
+            {
+                try {
+                    Integer i = (Integer) this.queue.poll(OFFICE_CLOSE, TimeUnit.MILLISECONDS);
+                    if (i == null) // barber slept for long time (OFFICE_CLOSE); no more clients in the queue - close office
+                        break;
+                    this.cutHair(i); // cutting...
+                } catch (InterruptedException e) {
+                    // do nothing
+                }
+            }
+        }
+
+        // simulate cutting hair
+        public void cutHair(Integer i)
+        {
+            System.out.println("Barber " + id + " is cutting hair for customer " + i);
+            try {
+                sleep(BARBER_TIME);
+            } catch (InterruptedException e) {
+                // do nothing
+            }
+        }
+    }
+
+    public static void main(String[] args)
+    {
+        Barbershop barbershop = new Barbershop();
+        barbershop.start();
+    }
+
+    public void run()
+    {
+        // create barbers
         for (int i = 0; i < NUM_BARBERS; i++)
         {
-            Barber barber = new Barber(Integer.toString(i));
-            System.out.println("Adding barber: " + barber.getThreadName());
+            Barber barber = new Barber(i, Barbershop.queue);
             barber.start();
-            sleepingBarber.add(barber);
         }
-    }
 
-    private void initializeCustomers()
-    {
-        // add 10 customers
+        // create new customers
         for (int i = 0; i < NUM_CUSTOMERS; i++)
         {
-            customersToEnterShop.add(new Customer(Integer.toString(i)));
+            Customer customer = new Customer(i, Barbershop.queue);
+            customer.start();
+            try {
+                sleep(CUSTOMER_TIME);
+            } catch (InterruptedException e) {
+                // do nothing
+            }
         }
     }
 
-    private void terminateBarbers()
-    {
-        System.out.println("Barbers: " + sleepingBarber.size());
-        while (!sleepingBarber.isEmpty())
-        {
-            Barber barber = sleepingBarber.pop();
-            System.out.println("Ending " + barber.getThreadName());
-            barber.setLoop(false);
-        }
-    }
 }
