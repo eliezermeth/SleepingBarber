@@ -1,0 +1,32 @@
+Barber 0 is cutting hair for customer 0.
+Customer 0 took a chair.
+Customer 1 took a chair.
+Barber 1 is cutting hair for customer 1.
+Customer 2 took a chair.
+Customer 0 has left the shop.
+Barber 0 is cutting hair for customer 2.
+Customer 3 took a chair.
+Customer 1 has left the shop.
+Barber 1 is cutting hair for customer 3.
+Customer 4 took a chair.
+Customer 2 has left the shop.
+Barber 0 is cutting hair for customer 4.
+Customer 5 took a chair.
+Customer 3 has left the shop.
+Barber 1 is cutting hair for customer 5.
+Customer 6 took a chair.
+Customer 7 took a chair.
+Customer 4 has left the shop.
+Barber 0 is cutting hair for customer 6.
+Customer 8 took a chair.
+Customer 5 has left the shop.
+Barber 1 is cutting hair for customer 7.
+Customer 9 took a chair.
+Customer 6 has left the shop.
+Barber 0 is cutting hair for customer 8.
+Customer 7 has left the shop.
+Barber 1 is cutting hair for customer 9.
+Customer 8 has left the shop.
+Customer 9 has left the shop.
+
+Process finished with exit code 0

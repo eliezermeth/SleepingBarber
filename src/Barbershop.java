@@ -11,14 +11,13 @@ import java.util.concurrent.TimeUnit;
 public class Barbershop extends Thread
 {
     // Class constants
-    public static final int CHARIS = 10; // num of chairs in waiting room (enough for all customers)
-    public static final long BARBER_TIME = 5000; // to cut hari
-    private static final long CUSTOMER_TIME = 2000;
-    public static final long OFFICE_CLOSE = BARBER_TIME * 2; // barber idle time to close
-    public static BlockingQueue queue = new ArrayBlockingQueue(CHARIS);
-
     public static final int NUM_BARBERS = 2;
     public static final int NUM_CUSTOMERS = 10;
+
+    public static final long BARBER_TIME = 5000;
+    private static final long CUSTOMER_TIME = 2000;
+    public static final long OFFICE_CLOSE_TIME = BARBER_TIME * 2;
+    public static BlockingQueue queue = new ArrayBlockingQueue(NUM_CUSTOMERS); // enough seats for all customers
 
     class Customer extends Thread
     {

@@ -8,5 +8,3 @@ We are NOT (NOT, NOT, NOT) using any of the various types of locks or similar cl
 work for us. No thread-pools.  No using synchronize. Please write a paragraph explaining how you solved
 the various “problems” that came up and the approach you took. Give one sample run of the code (show the
 output with the printed code).
-
-https://massivetechinterview.blogspot.com/2015/08/sleeping-barber-problem-oracle-java.html
