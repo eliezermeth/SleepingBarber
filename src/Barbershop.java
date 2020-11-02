@@ -11,10 +11,10 @@ import java.util.concurrent.TimeUnit;
 public class Barbershop extends Thread
 {
     // Class constants
-    public static final int CHARIS = 5;
-    public static final long BARBER_TIME = 5000;
+    public static final int CHARIS = 10; // num of chairs in waiting room (enough for all customers)
+    public static final long BARBER_TIME = 5000; // to cut hari
     private static final long CUSTOMER_TIME = 2000;
-    public static final long OFFICE_CLOSE = BARBER_TIME * 2;
+    public static final long OFFICE_CLOSE = BARBER_TIME * 2; // barber idle time to close
     public static BlockingQueue queue = new ArrayBlockingQueue(CHARIS);
 
     public static final int NUM_BARBERS = 2;
@@ -23,7 +23,6 @@ public class Barbershop extends Thread
     class Customer extends Thread
     {
         int id;
-        boolean notCut = true;
         BlockingQueue queue = null;
 
         public Customer(int i, BlockingQueue queue)
@@ -40,10 +39,10 @@ public class Barbershop extends Thread
                     this.queue.add(this.id);
 
                     this.getHaircut(); // take a seat
-                } catch (IllegalStateException e) {
+                } catch (IllegalStateException e) { // should be unreachable since more than enough seats
                     System.out.println("There are no free seats.  Customer " + this.id + " has left the barbershop.");
                 }
-                break;
+                break; // customer leaves shop and thread stops running
             }
         }
 
@@ -58,6 +57,7 @@ public class Barbershop extends Thread
     {
         BlockingQueue queue = null;
         int id;
+
         public Barber(int id, BlockingQueue queue)
         {
             this.id = id;
@@ -69,9 +69,12 @@ public class Barbershop extends Thread
             while (true)
             {
                 try {
+                    // attempt to pull customer from queue for certain period
                     Integer i = (Integer) this.queue.poll(OFFICE_CLOSE, TimeUnit.MILLISECONDS);
+
                     if (i == null) // barber slept for long time (OFFICE_CLOSE); no more clients in the queue - close office
                         break;
+                    // else
                     this.cutHair(i); // cutting...
                 } catch (InterruptedException e) {
                     // do nothing
@@ -84,7 +87,8 @@ public class Barbershop extends Thread
         {
             System.out.println("Barber " + id + " is cutting hair for customer " + i);
             try {
-                sleep(BARBER_TIME);
+                sleep(BARBER_TIME); // time it takes to cut hair
+                System.out.println("Customer " + this.id + " is finished and has left the shop.");
             } catch (InterruptedException e) {
                 // do nothing
             }
